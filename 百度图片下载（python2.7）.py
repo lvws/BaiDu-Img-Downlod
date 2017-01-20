@@ -14,7 +14,7 @@ import string
 import requests
 import os
 import time
-import threading
+
 
 user_agent = 'Mozilla/4.0(compatible; MSIE 5.5; Windows NT)'
 headers = {'User-Agent' : user_agent}
@@ -53,8 +53,6 @@ url_box = buildUrls(word)
 for i in url_box:
     req = urllib2.Request(i,headers = headers)
     url_jpg = pattern.findall(urllib2.urlopen(req).read())
-    time.sleep(0.5)
-    print i
     print len(url_jpg)
     if len(url_jpg) == 0:
         
@@ -65,38 +63,18 @@ for i in url_box:
         n += 1
         print '请求链接：' + url_new
         try :
-            req = requests.get(url_new)
+            req = requests.get(url_new,timeout = 2)
             if req.status_code != requests.codes.ok:
                 print '-------------'
                 print '请求不成功' + url_new
                 continue
         except:
-            pass
+            continue
         with open(filename,'wb') as f:
             f.write(req.content)
             f.close()
             time.sleep(0.1)
-            print '成功下载' + filename 
+            print '成功下载：' + url_new + '命名为：' + filename 
                 
-#class myThread(threading.Thread):
-#    def __init__(self,threadID,filename,url):
-#        threading.Thread.__init__(self)
-#        self.threadID = threadID
-#        self.filename = filename
-#        self.url = url
-#    def run(self):
-#        try:
-#            req = requests.get(self.url)
-#            if req.status_code != requests.codes.ok:
-#                print '-------------'
-#                print '请求不成功' + url_new
-#            else:
-#                with open(self.filename,'wb') as f:
-#                    f.write(req.content)
-#                    f.close()
-#                    time.sleep(0.1)
-#                print '成功下载' + self.filename
-#                
-#        except:
-#            pass
+
         
